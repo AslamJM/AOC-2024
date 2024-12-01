@@ -1,11 +1,9 @@
 package main
 
 import (
-	"aoc-2024/utils"
-	"fmt"
+	"aoc-2024/day1"
 )
 
 func main() {
-	s := utils.ReadFile("test")
-	fmt.Println(utils.GetLines(s))
+	day1.Part2()
 }
