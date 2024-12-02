@@ -23,3 +23,10 @@ func ReadFile(fileName string) string {
 func GetLines(s string) []string {
 	return strings.Split(s, "\r\n")
 }
+
+func Abs(x int) int {
+	if x < 0 {
+		return -x
+	}
+	return x
+}
