@@ -88,7 +88,7 @@ func tolerable(a []int) bool {
 
 	i := 0
 
-	for i < len(a)-1 {
+	for i < len(a) {
 		rm := removeElement(a, i)
 		if testSafety(rm) {
 			return true
