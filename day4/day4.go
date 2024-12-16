@@ -31,6 +31,7 @@ func Part1() {
 	for i := 0; i < cols; i++ {
 		for j := 0; j < rows; j++ {
 			if input[i][j] == "X" {
+
 				// check right tr br
 				if j <= rows-4 {
 					if words := input[i][j+1 : j+4]; strings.Join(words, "") == "MAS" {
@@ -44,15 +45,14 @@ func Part1() {
 						}, "") == "MAS" {
 							count++
 						}
+					}
 
-						// br
-						if i <= cols-4 {
-
-							if strings.Join([]string{
-								input[i+1][j+1], input[i+2][j+2], input[i+3][j+3],
-							}, "") == "MAS" {
-								count++
-							}
+					// br
+					if i <= cols-4 {
+						if strings.Join([]string{
+							input[i+1][j+1], input[i+2][j+2], input[i+3][j+3],
+						}, "") == "MAS" {
+							count++
 						}
 					}
 
@@ -71,14 +71,14 @@ func Part1() {
 						}, "") == "MAS" {
 							count++
 						}
+					}
 
-						// bl
-						if i <= cols-4 {
-							if strings.Join([]string{
-								input[i+1][j-1], input[i+2][j-2], input[i+3][j-3],
-							}, "") == "MAS" {
-								count++
-							}
+					// bl
+					if i <= cols-4 {
+						if strings.Join([]string{
+							input[i+1][j-1], input[i+2][j-2], input[i+3][j-3],
+						}, "") == "MAS" {
+							count++
 						}
 					}
 				}
@@ -101,6 +101,32 @@ func Part1() {
 					}
 				}
 
+			}
+		}
+	}
+
+	fmt.Println(count)
+}
+
+func Part2() {
+	input := parseInput()
+
+	cols, rows := len(input), len(input[0])
+
+	count := 0
+
+	for i := 1; i < cols-1; i++ {
+		for j := 1; j < rows-1; j++ {
+			if input[i][j] == "A" {
+				word_l := strings.Join([]string{
+					input[i-1][j-1], "A", input[i+1][j+1],
+				}, "")
+				word_r := strings.Join([]string{
+					input[i-1][j+1], "A", input[i+1][j-1],
+				}, "")
+				if (word_l == "MAS" || word_l == "SAM") && (word_r == "MAS" || word_r == "SAM") {
+					count++
+				}
 			}
 		}
 	}
