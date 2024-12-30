@@ -106,7 +106,7 @@ func canLoop(input *[][]string, x, y int) bool {
 
 	switch dir {
 	case "^":
-		if inp[y+1][x] == "." {
+		if inp[y-1][x] == "." {
 			return true
 		}
 	case ">":
@@ -114,7 +114,7 @@ func canLoop(input *[][]string, x, y int) bool {
 			return true
 		}
 	case "v":
-		if inp[y-1][x] == "." {
+		if inp[y+1][x] == "." {
 			return true
 		}
 	case "<":
@@ -165,6 +165,7 @@ func Part2() {
 			visited = append(visited, [2]int{x, y})
 		} else {
 			if canLoop(&input, x, y) && !slices.Contains(loopPositions, [2]int{x, y}) {
+				visited = [][2]int{}
 				loopPositions = append(loopPositions, [2]int{x, y})
 				x, y = findStart()
 			}
