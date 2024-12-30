@@ -100,6 +100,32 @@ func move(input *[][]string, x, y int) (int, int) {
 	}
 }
 
+func canLoop(input *[][]string, x, y int) bool {
+	inp := *input
+	dir := inp[y][x]
+
+	switch dir {
+	case "^":
+		if inp[y+1][x] == "." {
+			return true
+		}
+	case ">":
+		if inp[y][x+1] == "." {
+			return true
+		}
+	case "v":
+		if inp[y-1][x] == "." {
+			return true
+		}
+	case "<":
+		if inp[y][x-1] == "." {
+			return true
+		}
+	}
+
+	return false
+}
+
 func Part1() {
 	input := parseInput()
 	x, y := findStart()
@@ -119,4 +145,31 @@ func Part1() {
 
 	fmt.Println(len(visited))
 
+}
+
+func Part2() {
+	input := parseInput()
+	x, y := findStart()
+	h, w := len(input)-1, len(input[0])-1
+
+	var visited [][2]int = [][2]int{
+		{x, y},
+	}
+
+	var loopPositions [][2]int = [][2]int{}
+
+	for !isExit(input[y][x], h, w, x, y) {
+		x, y = move(&input, x, y)
+
+		if !slices.Contains(visited, [2]int{x, y}) {
+			visited = append(visited, [2]int{x, y})
+		} else {
+			if canLoop(&input, x, y) && !slices.Contains(loopPositions, [2]int{x, y}) {
+				loopPositions = append(loopPositions, [2]int{x, y})
+				x, y = findStart()
+			}
+		}
+	}
+
+	fmt.Println(len((loopPositions)))
 }
