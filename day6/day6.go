@@ -100,30 +100,30 @@ func move(input *[][]string, x, y int) (int, int) {
 	}
 }
 
-func canLoop(input *[][]string, x, y int) bool {
+func canLoop(input *[][]string, loopPositions *[][2]int, x, y int) [2]int {
 	inp := *input
 	dir := inp[y][x]
 
 	switch dir {
 	case "^":
-		if inp[y-1][x] == "." {
-			return true
+		if inp[y-1][x] == "." && !slices.Contains(*loopPositions, [2]int{x, y - 1}) {
+			return [2]int{x, y - 1}
 		}
 	case ">":
-		if inp[y][x+1] == "." {
-			return true
+		if inp[y][x+1] == "." && !slices.Contains(*loopPositions, [2]int{x + 1, y}) {
+			return [2]int{x + 1, y}
 		}
 	case "v":
-		if inp[y+1][x] == "." {
-			return true
+		if inp[y+1][x] == "." && !slices.Contains(*loopPositions, [2]int{x, y + 1}) {
+			return [2]int{x, y + 1}
 		}
 	case "<":
-		if inp[y][x-1] == "." {
-			return true
+		if inp[y][x-1] == "." && !slices.Contains(*loopPositions, [2]int{x - 1, y}) {
+			return [2]int{x - 1, y}
 		}
 	}
 
-	return false
+	return [2]int{}
 }
 
 func Part1() {
@@ -164,9 +164,9 @@ func Part2() {
 		if !slices.Contains(visited, [2]int{x, y}) {
 			visited = append(visited, [2]int{x, y})
 		} else {
-			if canLoop(&input, x, y) && !slices.Contains(loopPositions, [2]int{x, y}) {
+			if pos := canLoop(&input, &loopPositions, x, y); pos != [2]int{} && !slices.Contains(loopPositions, pos) {
 				visited = [][2]int{}
-				loopPositions = append(loopPositions, [2]int{x, y})
+				loopPositions = append(loopPositions, pos)
 				x, y = findStart()
 			}
 		}
