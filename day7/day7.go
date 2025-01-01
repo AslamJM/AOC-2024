@@ -46,24 +46,43 @@ func parseInput() []calibration {
 
 }
 
-func permutations(l int, permMap *map[int][]rune, curr []rune, ops []rune) {
+func permutations(l int, ops []rune) [][]rune {
 
-	mp := *permMap
-
-	if mp[l] != nil {
-		return
-	}
-	if len(curr) == l {
-		mp[l] = append([]rune(nil), curr...)
-		curr = []rune{}
-		return
+	if l == 0 {
+		return [][]rune{{}}
 	}
 
-	for _, op := range ops {
-		curr = append(curr, op)
-		permutations(l, permMap, curr, ops)
-		curr = curr[:len(curr)-1]
+	var result [][]rune
+
+	one_less := permutations(l-1, ops)
+
+	for _, per := range one_less {
+		for _, op := range ops {
+			result = append(result, append(per, op))
+		}
 	}
+
+	return result
+}
+
+func isCalibrationCorrect(cal calibration, seq []rune) bool {
+
+	nums := cal.nums
+	res := cal.result
+
+	sum := nums[0]
+
+	for i, r := range seq {
+		if r == '+' {
+			sum += nums[i+1]
+		}
+
+		if r == '*' {
+			sum *= nums[i+1]
+		}
+	}
+
+	return sum == res
 }
 
 func Part1() {
@@ -71,11 +90,27 @@ func Part1() {
 	input := parseInput()
 
 	ops := []rune{'*', '+'}
-	permMap := make(map[int][]rune)
+	permMap := make(map[int][][]rune)
 
-	permutations(len(input), &permMap, []rune{}, ops)
+	sum := 0
 
-	for length, sequence := range permMap {
-		fmt.Printf("Length %d: %s\n", length, string(sequence))
+	for _, cal := range input {
+		perms, ok := permMap[len(cal.nums)-1]
+
+		if !ok {
+			permMap[len(cal.nums)-1] = permutations(len(cal.nums)-1, ops)
+			perms = permMap[len(cal.nums)-1]
+		}
+
+		for _, p := range perms {
+			if isCalibrationCorrect(cal, p) {
+				sum += cal.result
+				break
+			}
+		}
+
 	}
+
+	fmt.Println(sum)
+
 }
