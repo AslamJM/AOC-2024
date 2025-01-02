@@ -3,6 +3,7 @@ package day7
 import (
 	"aoc-2024/utils"
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 )
@@ -58,7 +59,9 @@ func permutations(l int, ops []rune) [][]rune {
 
 	for _, per := range one_less {
 		for _, op := range ops {
-			result = append(result, append(per, op))
+			newPerm := append([]rune{}, per...)
+			newPerm = append(newPerm, op)
+			result = append(result, newPerm)
 		}
 	}
 
@@ -79,6 +82,10 @@ func isCalibrationCorrect(cal calibration, seq []rune) bool {
 
 		if r == '*' {
 			sum *= nums[i+1]
+		}
+
+		if r == '|' {
+			sum = concat2Nums(sum, nums[i+1])
 		}
 	}
 
@@ -113,4 +120,49 @@ func Part1() {
 
 	fmt.Println(sum)
 
+}
+
+// part 2
+
+func countDigits(num int) int {
+	count := 0
+
+	for num != 0 {
+		num /= 10
+		count++
+	}
+
+	return count
+}
+
+func concat2Nums(a, b int) int {
+	return a*int(math.Pow10(countDigits(b))) + b
+}
+
+func Part2() {
+	input := parseInput()
+	ops := []rune{'*', '+', '|'}
+	permMap := make(map[int][][]rune)
+
+	sum := 0
+
+	for _, cal := range input {
+
+		perms, ok := permMap[len(cal.nums)-1]
+
+		if !ok {
+			permMap[len(cal.nums)-1] = permutations(len(cal.nums)-1, ops)
+			perms = permMap[len(cal.nums)-1]
+		}
+
+		for _, p := range perms {
+			if isCalibrationCorrect(cal, p) {
+				sum += cal.result
+				break
+			}
+		}
+
+	}
+
+	fmt.Println(sum)
 }
